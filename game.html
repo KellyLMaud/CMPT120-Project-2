@@ -1,0 +1,122 @@
+<!DOCTYPE HTML>
+<html>
+<!-- Kelly L. Maud
+     Introduction to Programming
+     September 17th 2012
+     Project 2 - v0.2 -->
+     
+  <head>
+    <title> Text Adventure </title>
+    <style>
+      body { background-color: #8B7D7B; }
+      h1 { font-weight: bold; color: #C8F526; }
+      h2 { font-style: italic; color: #00CED1; }
+    </style>
+    <script>
+      var score = 0;
+      var first_visit_north = new Boolean (true) ;
+      var first_visit_south = new Boolean (true) ;
+      var first_visit_east = new Boolean (true) ;
+      var first_visit_west = new Boolean (true) ;
+      
+      function btn_score_click() {
+        alert("your score is "+score);
+      }
+      
+      function btn_north_click() {
+        var msg = "You have entered a field where you see wild mice and "+
+                  "rabbits along with some edible vegitation. If you had a "+
+                  "knife and rope you can make a snare and catch a rabbit for food.";
+        alert(msg);
+        if(first_visit_north==true) {
+          score=score+5;
+          first_visit_north=false;
+        }
+        else {
+          score=score+0;
+        }
+      } 
+      
+      function btn_east_click() {
+        var msg = "You have entered a clear area by the stream. " +
+                  "If you have a pot you can take some water back to " +
+                  "camp and boil it to clean it. Also if you have a branch " +
+                  "and rope you can make a fishing pole and go fishing.";
+        alert(msg);
+        if(first_visit_east==true){
+          score=score+5;
+          first_visit_east=false;
+        }
+        else {
+        score=score+0;
+        }
+      }
+      
+      function btn_west_click() {
+        var msg = "You have entered a forest where there are trees. " +
+                   "If you had a knife you can cut down small branches to make a fire " +
+                   "to cook your food and if you have rope you can use the branches to make a shelter.";
+        alert(msg);
+        if(first_visit_west==true){
+          score=score+5;
+          first_visit_west=false;
+        }
+        else {
+        score=score+0;
+        }
+      } 
+                                                           
+      function btn_south_click() {
+        var msg = "You have entered the crash site of your plane. " +
+                   "There is plenty of resources that you can collect from the plane. " + 
+                   "There is a knife, rope, a first aid kit, fuel and maybe even a pot.";
+        alert(msg);
+        if(first_visit_south==true){
+          score=score+5;
+          first_visit_south=false;
+        }
+        else {
+        score=score+0;
+        }
+      }
+      
+      </script>
+  </head>
+  
+  <body>
+    <h1>Survival</h1>
+    <h2>by Kelly Maud</h2>
+    <textarea rows="10" cols="60" id="tagame"> 
+    You were on a biplane going site seeing in the Colorado Mountains when the pilot had a seizure and the plane went down. 
+    You survive the plane crash with a broken hand but the pilot and the two other passengers do not. 
+    In order to survive you must splint your arm and set up camp for the night... there is a field north of you and a stream to the east. To the west is a forest and to the south is where the plane crashed.  
+    In the field north of you there is wild animals, such as rabbits and mice, and there is also vegitation.
+    The stream east of you may have some salmon you can fish for.
+    In the forest there are plenty of sturdy branches.
+    The plane crash may have a first aid kit or other useful things... go check it out.
+    </textarea>
+    <p>
+      <input type="button"
+             value= "score"
+             onclick="btn_score_click();">
+      <br><br>       
+      <input type="button"
+             value= "north"
+             onclick="btn_north_click();">        
+      <input type="button"
+             value= "east"
+             onclick="btn_east_click();">         
+      <input type="button"
+             value= "west"
+             onclick="btn_west_click();">    
+      <input type="button"
+             value= "south"
+             onclick="btn_south_click();">
+            
+    </p>
+    <p>
+      <a href="mailto:Kelly.Maud1@marist.edu">Email Kelly Maud</a>
+    </p>
+   
+  </body>
+</html>    
