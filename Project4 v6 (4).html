@@ -1,0 +1,284 @@
+<!DOCTYPE HTML>
+<html>
+<!-- Kelly L. Maud
+     Introduction to Programming
+     November 7th 2012
+     Project 2 - v0.6 -->
+     
+  <head>
+     <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+     <meta name="author"             content="Kelly L. Maud" />
+    <title> Text Adventure </title>
+    <style>
+      body { background-color: #C8F526; }
+      h1 { font-weight: bold; color: #FF0066; }
+      h2 { font-style: italic; color: #00CED1; }
+    </style>
+    <script type="text/javascript"
+            src="locations.js"> </script>
+    <script>
+      //for the score:
+      var score             = 0;
+      var first_visit_north = true;
+      var first_visit_south = true;
+      var first_visit_east  = true;
+      var first_visit_west  = true;
+      //for the inventory:
+      var inventory         ="Inventory: ";
+      var hasComforter      = false;
+      var hasBroomstick     = false;
+      var hasChair          = false;
+      var hasString         = false;
+      //for keeping track of location:
+      var xCord             = 1;
+      var yCord             = 1;
+      
+      
+      
+      function btn_score_click() {
+        var msg="Your score is "+score+".";
+        updateDisplay(msg);
+      }
+      
+      function btn_north_click() {
+        yCord = yCord + 1;
+        check_location();
+        if(first_visit_north===true) {
+          score=score+5;
+          first_visit_north=false;
+        }        
+      } 
+      
+      function btn_east_click() {
+        xCord = xCord + 1;
+        check_location();
+        if(first_visit_east===true){
+          score=score+5;
+          first_visit_east=false;
+        }        
+      }
+      
+      function btn_west_click() {
+        xCord = xCord - 1;
+        check_location();
+        if(first_visit_west===true){
+          score=score+5;
+          first_visit_west=false;
+        }        
+      } 
+      
+      function btn_south_click() {
+        yCord = yCord - 1;
+        check_location();
+        if(first_visit_south===true){
+          score=score+5;
+          first_visit_south=false;
+        }
+        
+      }
+      
+      
+      function check_location() {
+        if (xCord=== 0 && yCord=== 4){
+          location_back_yard1();
+        }
+        if (xCord=== 1 && yCord=== 4){
+          location_back_yard2();
+        }
+        if (xCord=== 2 && yCord=== 4){
+          location_back_yard3();
+        }
+        if (xCord=== 0 && yCord=== 3){
+          location_bedroom();
+        }
+        if (xCord=== 1 && yCord=== 3){
+          location_mud_room();
+        }
+        if (xCord=== 2 && yCord=== 3){
+          location_kitchen();
+        }
+        if (xCord=== 0 && yCord=== 2){
+          location_bathroom();
+        }
+        if (xCord=== 1 && yCord=== 2){
+          location_living_room();
+        }
+        if (xCord=== 2 && yCord=== 2){
+          location_game_room();
+        }
+        if (xCord=== 0 && yCord=== 1){
+          location_kids_bedroom();
+        }
+        if (xCord=== 1 && yCord=== 1){
+          location_foyer();
+        }
+        if (xCord=== 2 && yCord=== 1){
+          location_office();
+        }
+        if (yCord===5){
+          var msg = "You cannot go north.";
+          updateDisplay(msg);
+          yCord=4;
+        }
+        if (yCord===0){
+          var msg = "You cannot go south.";
+          updateDisplay(msg);
+          yCord=1;
+        }
+        if (xCord<0){
+          var msg = "You cannot go west.";
+          updateDisplay(msg);
+          xCord=0;
+        }
+        if (xCord===3){
+          var msg = "You cannot go east.";
+          updateDisplay(msg);
+          xCord=2;
+        }
+      }
+      
+      //msg is different for each location and this updates it in the text area
+      function updateDisplay(msg) {
+        var ta=document.getElementById("tagame");
+        ta.value="\n" + msg + "\n" + ta.value + "\n" ;
+      }
+      
+      //this is so you can enter commands in the text input but you can still use the buttons
+      //this is also so you can put items in your inventory
+      function btn_enter_click() {
+      var text = document.getElementById("text_command");
+        switch (text.value){
+          case "n" : btn_north_click();
+                     text.value = "";
+                     break;
+          case "N" : btn_north_click();
+                     text.value = "";
+                     break;
+          case "s" : btn_south_click();
+                     text.value = "";
+                     break;
+          case "S" : btn_south_click();
+                     text.value = "";
+                     break;
+          case "e" : btn_east_click();
+                     text.value = "";
+                     break;
+          case "E" : btn_east_click();
+                     text.value = "";
+                     break;
+          case "w" : btn_west_click();
+                     text.value = "";
+                     break;
+          case "W" : btn_west_click();
+                     text.value = "";
+                     break;  
+          case "help" : var msg = "the valid commands are take, n, N, s, S, e, E, w and W.";
+                        updateDisplay(msg);
+                        text.value = "";
+                        break;  
+          case "take chair" : hasChair=true;
+                              var msg = "you took the chair.";
+                              updateDisplay(msg);
+                              text.value="";
+                              break;
+          case "take broom" : hasBroomstick=true;
+                              var msg = "you took the broomstick.";
+                              updateDisplay(msg);
+                              text.value="";
+                              break;
+          case "take comforter" : hasComforter=true;
+                                   var msg = "you took the comforter.";
+                                   updateDisplay(msg);
+                                   text.value="";
+                                   break;
+          case "take string" : hasString=true;
+                               var msg = "you took the string.";
+                               updateDisplay(msg);
+                               text.value="";
+                               break;   
+          default : var msg = "You have entered an invalid command";
+                     updateDisplay(msg);   
+                     break;         
+         }
+       }
+      
+      //initialized message onload
+      function init(){
+        var msg ="     You are in the foyer of your house with your younger brother "+
+                 "on a boring Sunday morning. You decide to make a fort in our "+
+                 "living room to keep you busy.  "+"\n"+
+                 "     Throughout your house there are "+
+                 "items such as a CHAIR, a COMFORTER, STRING and a BROOMSTICK "+
+                 "that you will need to build your fort."+
+                 "     Enter -help- to view valid commands.";
+        updateDisplay(msg);         
+      }
+      
+      //displays the inventory
+      function btn_inventory_click(){
+        if(hasComforter===true){
+          inventory=inventory+"comforter ";
+        }
+        if(hasBroomstick===true){
+          inventory=inventory+"broomstick ";
+        }
+        if(hasChair===true){
+          inventory=inventory+"chair ";
+        }
+        if(hasString===true){
+          inventory=inventory+"string ";
+        }
+        updateDisplay(inventory);
+      }
+      
+      </script>
+  </head>
+  
+  <body onload="init();">
+    <h1>Fort</h1>
+    <h2>by Kelly Maud</h2>
+    <textarea rows="10" cols="60" id="tagame"></textarea>
+    <p>
+      <input type="button"
+             value= "score"
+             onclick="btn_score_click();">
+      <br><br>       
+      <input type="button"
+             value= "north"
+             onclick="btn_north_click();"
+             id="north_button">        
+      <input type="button"
+             value= "east"
+             onclick="btn_east_click();"
+             id="east_button">         
+      <input type="button"
+             value= "west"
+             onclick="btn_west_click();"
+             id="west_button">    
+      <input type="button"
+             value= "south"
+             onclick="btn_south_click();"
+             id="south_button">
+      <input type="button"
+             value="view inventory"
+             onclick="btn_inventory_click();">
+      <br>       
+      <input type="text"
+             id="text_command"> 
+      <input type="button"
+             value="Enter"
+             onclick="btn_enter_click();">        
+            
+    </p>
+    
+    <p> 
+      <IMG SRC="map.png" width="500" height="600"> 
+    </p>
+    <br>
+    <p>
+      <a href="mailto:Kelly.Maud1@marist.edu">Email Kelly Maud</a>
+    </p>
+   
+  </body>
+</html>   
+ 
