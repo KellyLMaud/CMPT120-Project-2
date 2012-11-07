@@ -1,0 +1,186 @@
+<!DOCTYPE HTML>
+<html>
+<!-- Kelly L. Maud
+     Introduction to Programming
+     October 15th 2012
+     Project 2 - v0.4 -->
+     
+  <head>
+    <title> Text Adventure </title>
+    <style>
+      body { background-color: #8B7D7B; }
+      h1 { font-weight: bold; color: #C8F526; }
+      h2 { font-style: italic; color: #00CED1; }
+    </style>
+    <script type="text/javascript"
+            src="locations.js"> </script>
+    <script>
+      var score             = 0;
+      var first_visit_north = true;
+      var first_visit_south = true;
+      var first_visit_east  = true;
+      var first_visit_west  = true;
+      var hasComforter      = false;
+      var hasBroomstick     = false;
+      var hasChair          = false;
+      var hasString         = false;
+      var xCord             = 1;
+      var yCord             = 0;
+      
+      
+      function btn_score_click() {
+        msg="Your score is "+score+".";
+        updateDisplay(msg);
+      }
+      
+      function btn_north_click() {
+        yCord = yCord + 1;
+        check_location();
+        if(first_visit_north===true) {
+          score=score+5;
+          first_visit_north=false;
+        }        
+      } 
+      
+      function btn_east_click() {
+        xCord = xCord + 1;
+        check_location();
+        if(first_visit_east===true){
+          score=score+5;
+          first_visit_east=false;
+        }        
+      }
+      
+      function btn_west_click() {
+        xCord = xCord - 1;
+        check_location();
+        if(first_visit_west===true){
+          score=score+5;
+          first_visit_west=false;
+        }        
+      } 
+      
+      function btn_south_click() {
+        yCord = yCord - 1;
+        check_location();
+        if(first_visit_south===true){
+          score=score+5;
+          first_visit_south=false;
+        }
+      }
+      
+      function check_location() {
+        if (xCord=== 1 && yCord=== 4){
+          location_back_yard();
+        }
+        if (xCord=== 0 && yCord=== 3){
+          location_bedroom();
+        }
+        if (xCord=== 1 && yCord=== 3){
+          location_mud_room();
+        }
+        if (xCord=== 2 && yCord=== 3){
+          location_kitchen();
+        }
+        if (xCord=== 0 && yCord=== 2){
+          location_bathroom();
+        }
+        if (xCord=== 1 && yCord=== 2){
+          location_living_room();
+        }
+        if (xCord=== 2 && yCord=== 2){
+          location_game_room();
+        }
+        if (xCord=== 0 && yCord=== 1){
+          location_kids_bedroom();
+        }
+        if (xCord=== 1 && yCord=== 1){
+          location_foyer();
+        }
+        if (xCord=== 2 && yCord=== 1){
+          location_office();
+        }
+        if (xCord=== 1 && yCord=== 0){
+          location_front_yard();
+        }
+      }
+      
+      
+      //msg is different for each location and this update it in the text area
+      function updateDisplay(msg) {
+        var ta=document.getElementById("tagame");
+        ta.value="\n" + msg + "\n" + ta.value + "\n" ;
+      }
+      
+      //this is so you can enter commands in the text input but you can still use the buttons
+      function btn_go_click() {
+        var text=document.getElementById("text_command");
+        if((text.value==="n")||(text.value==="N")){
+          btn_north_click();
+        }
+        else if((text.value==="s")||(text.value==="S")){
+          btn_south_click();
+        }
+        else if((text.value==="e")||(text.value==="E")){
+          btn_east_click();
+        }
+        else if((text.value==="w")||(text.value==="W")){
+          btn_west_click();
+        }
+        else {
+           msg="You have entered an invalid command" + "\n" +
+               "The valid commands are n, N, s, S, e, E, w and W." + "\n" +
+               "Or you can always use the buttons.";
+          updateDisplay(msg);      
+        }
+      }
+      
+      </script>
+  </head>
+  
+  <body>
+    <h1>Fort</h1>
+    <h2>by Kelly Maud</h2>
+    <textarea rows="10" cols="60" id="tagame"> 
+    You are in the front yard of your house with your younger brother on a boring Sunday morning. You decide to make a fort in our living room to keep you busy.
+    Throughout your house there are items such as a CHAIR, a COMFORTER, STRING and a BROOMSTICK that you will need to build your fort. 
+    </textarea>
+    <p>
+      <input type="button"
+             value= "score"
+             onclick="btn_score_click();">
+      <br><br>       
+      <input type="button"
+             value= "north"
+             onclick="btn_north_click();">        
+      <input type="button"
+             value= "east"
+             onclick="btn_east_click();">         
+      <input type="button"
+             value= "west"
+             onclick="btn_west_click();">    
+      <input type="button"
+             value= "south"
+             onclick="btn_south_click();">
+      <input type="button"
+             value="view inventory"
+             onclick="inventory();">
+      <br>       
+      <input type="text"
+             id="text_command"> 
+      <input type="button"
+             value="Enter"
+             onclick="btn_go_click();">        
+            
+    </p>
+    
+    <p> 
+      <img src="map.png" width="92" height="120" alt="here is your map"> 
+    </p>
+    <br>
+    <p>
+      <a href="mailto:Kelly.Maud1@marist.edu">Email Kelly Maud</a>
+    </p>
+   
+  </body>
+</html>    
