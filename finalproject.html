@@ -1,0 +1,316 @@
+<!DOCTYPE HTML>
+<html>
+<!-- Kelly L. Maud
+     Introduction to Programming
+     November 114th 2012
+     Project 5 - v0.8 -->
+     
+  <head>
+     <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+     <meta name="author"             content="Kelly L. Maud" />
+    <title> Text Adventure </title>
+    <style>
+      body { background-color: #C8F526; }
+      h1 { font-weight: bold; color: #FF0066; }
+      h2 { font-style: italic; color: #00CED1; }
+    </style>
+    <script type="text/javascript"
+            src="locations.js"></script>
+    <script>
+      //for the score:
+      var playAgain               ="";
+      var score                   = 0;
+      var first_visit_location0   = true;
+      var first_visit_location1   = true;
+      var first_visit_location2   = true;
+      var first_visit_location3   = true;
+      var first_visit_location4   = true;
+      var first_visit_location5   = true;
+      var first_visit_location6   = true;
+      var first_visit_location7   = true;
+      var first_visit_location8   = true;
+      var first_visit_location9   = true;
+      var first_visit_location10  = true;
+      var first_visit_location11  = true;
+
+      //for the inventory:
+      var inventoryCount    = 0;
+      var hasSheet          = false;
+      var hasBroomstick     = false;
+      var hasChair          = false;
+      var hasString         = false;
+      //for the move function:
+      var NORTH = 0;
+      var SOUTH = 1;
+      var EAST  = 2;
+      var WEST  = 3;
+      //navigation matrix:
+      var currentLocation = 10;
+      var nav = [//    N0   S1  E2  W3    loc id
+                      [-1,  3,  1, -1], //0
+                      [-1,  4,  2,  0], //1
+                      [-1,  5, -1,  1], //2
+                      [ 0,  6,  4, -1], //3
+                      [ 1,  7,  5,  3], //4
+                      [ 2,  8, -1,  4], //5
+                      [ 3,  9,  7, -1], //6
+                      [ 4, 10,  8,  6], //7
+                      [ 5, 11, -1,  7], //8
+                      [ 6, -1, 10, -1], //9
+                      [ 7, -1, 11,  9], //10
+                      [ 8, -1, -1, 10]];//11
+      //Arrays:                
+      var locArray  = [12];
+      var itemArray = [4];
+      var inventory = [];
+      
+      //item prototype
+      function item(_id, _name, _description) {
+        this.id          = _id;
+        this.name        = _name;
+        this.description = _description;
+        this.toString    = function() {
+                            var retVal = "";
+                            retVal = "[Item]: "                         + "\n" +
+                                     "id: "          + this.id          + "\n" +
+                                     "name: "        + this.name        + "\n" +
+                                     "description: " + this.description + "\n" ;
+                          }
+      }                
+      
+      //stores all 4 items in an array
+      function createItems (){
+        itemArray[0] = new item ("sheet",     "Sheet",      "This item can be found in the parents bedroom");
+        itemArray[1] = new item ("broom",     "Broomstick", "This item can be found in the mudroom");
+        itemArray[2] = new item ("chair",     "Chair",      "This item can be found in the kitchen");
+        itemArray[3] = new item ("string",    "String",     "This item can be found in the office");
+        
+      }
+      
+      //location prototype
+      function loc (_id, _name, _description, _item){
+        this.id          = _id;
+        this.name        = _name;
+        this.description = _description;
+        this.item        = _item;
+        this.toString    = function(){
+                            var retVal = "";
+                            retVal =  "[Location]: "                     + "\n" +
+                                      "id: "          + this.id          + "\n" +
+                                      "name: "        + this.name        + "\n" +
+                                      "description: " + this.description + "\n" +
+                                      "item: "        + this.item        + "\n" ;
+                            return retVal;
+                          }
+      }
+       
+      //stores all 12 items in an array
+      function createLocations (){ 
+        locArray[0]  = new loc (0, "Back Yard West",   "You are in the west side of the back yard.",                                "");
+        locArray[1]  = new loc (1, "Back Yard Middle", "You are in the middle of the back yard.",                                   "");
+        locArray[2]  = new loc (2, "Back Yard East",   "You are in the east side of the back yard.",                                "");
+        locArray[3]  = new loc (3, "Bedroom",          "You have entered the parents bedroom where there is a SHEET.",          itemArray[0].name);
+        locArray[4]  = new loc (4, "Mud Room",         "You have entered the mudroom where there is a BROOMSTICK.",                 itemArray[1].name);
+        locArray[5]  = new loc (5, "Kitchen",          "You have entered the kitchen where there is a CHAIR.",                      itemArray[2].name);
+        locArray[6]  = new loc (6, "Bathroom",         "You have entered the bathroom.",                                            "");
+        locArray[7]  = new loc (7, "Living Room",      "You are in the living room. This is where you are going to make the fort.", "");
+        locArray[8]  = new loc (8, "Game Room",        "You have entered the game room",                                            "");
+        locArray[9]  = new loc (9, "Kids Bedroom",     "You have entered the kids bedroom.",                                        "");
+        locArray[10] = new loc (10,"Foyer",            "You have entered the foyer.",                                               "");
+        locArray[11] = new loc (11,"Office",           "You have entered the office where there is STRING.",                        itemArray[3].name);
+      }
+      
+      //updates currentLocation && calls displayCurrentLocation()
+      function move(direction) {
+        var newLocation = nav[currentLocation][direction];// row THEN column.
+        if(newLocation !== -1){
+          currentLocation = newLocation;
+          createItems();
+          createLocations();
+          displayCurrentLocation();
+        } else {
+          updateDisplay ("You cannot go that way.");
+        }
+      }     
+            
+      //takes currentLocation&&updates the description && calls win()
+      function displayCurrentLocation() {
+        switch (currentLocation) {
+          case  0 : updateDisplay(locArray[0].description);  location0();  win();   break;
+          case  1 : updateDisplay(locArray[1].description);  location1();  win();   break;
+          case  2 : updateDisplay(locArray[2].description);  location2();  win();   break;
+          case  3 : updateDisplay(locArray[3].description);  location3();  win();   break;
+          case  4 : updateDisplay(locArray[4].description);  location4();  win();   break;
+          case  5 : updateDisplay(locArray[5].description);  location5();  win();   break;
+          case  6 : updateDisplay(locArray[6].description);  location6();  win();   break;
+          case  7 : updateDisplay(locArray[7].description);  location7();  win();   break;
+          case  8 : updateDisplay(locArray[8].description);  location8();  win();   break;
+          case  9 : updateDisplay(locArray[9].description);  location9();  win();   break;
+          case 10 : updateDisplay(locArray[10].description); location10(); win();   break;
+          case 11 : updateDisplay(locArray[11].description); location11(); win();   break;// this is for the text of each room!
+        }
+      }
+      
+      //when score button is clicked this displays the score
+      function btn_score_click() {
+        var msg="Your score is "+score+".";
+        updateDisplay(msg);
+      }
+      
+      //this is so you can enter commands in the text input but you can still use the buttons
+      //this is also so you can put items in your inventory
+      function btn_enter_click() {
+      var text = document.getElementById("text_command");
+        switch (text.value){
+          case "n" : move(NORTH);
+                     text.value = "";
+                     break;
+          case "N" : move(NORTH);
+                     text.value = "";
+                     break;
+          case "s" : move(SOUTH);
+                     text.value = "";
+                     break;
+          case "S" : move(SOUTH);
+                     text.value = "";
+                     break;
+          case "e" : move(EAST);
+                     text.value = "";
+                     break;
+          case "E" : move(EAST);
+                     text.value = "";
+                     break;
+          case "w" : move(WEST);
+                     text.value = "";
+                     break;
+          case "W" : move(WEST);
+                     text.value = "";
+                     break;  
+          case "help" : var msg = "the valid commands are: i, take, n, N, s, S, e, E, w and W.";
+                        updateDisplay(msg);
+                        text.value = "";
+                        break;  
+          case "take" : if (currentLocation===3&&hasSheet===false){
+                            inventory[inventoryCount]="Sheet";
+                            updateDisplay("The sheet was added to your inventory.");
+                            hasSheet=true;
+                            inventoryCount++;
+                            score = score + 10;
+                         }  else if (currentLocation===4&&hasBroomstick===false){
+                              inventory[inventoryCount]="Broomstick";
+                              updateDisplay("The broomstick was added to your inventory.");
+                              hasBroomstick=true;
+                              inventoryCount++;
+                              score = score + 10;
+                         }  else if (currentLocation===5&&hasChair===false){
+                              inventory[inventoryCount]="Chair";
+                              updateDisplay("The chair was added to your inventory.");
+                              hasChair=true;
+                              inventoryCount++;
+                              score = score + 10;
+                         }  else if (currentLocation===11&&hasString===false){
+                              inventory[inventoryCount]="String";
+                              updateDisplay("The string was added to your inventory.");
+                              hasString=true;
+                              inventoryCount++;
+                              score = score + 10;
+                         }  else {
+                              updateDisplay("You cannot take anything at this time.");
+                         }
+                         text.value = "";
+                         break;
+          case "i" : updateDisplay(inventory);
+                     text.value = "";
+                     break;
+          default : var msg = "You have entered an invalid command";
+                     updateDisplay(msg); 
+                     text.value="";  
+                     break;         
+         }
+       }
+       
+      //msg is different for each location and this updates it in the text area
+      function updateDisplay(msg) {
+        var ta=document.getElementById("tagame");
+        ta.value="\n" + msg + "\n" + ta.value + "\n" ;
+      }
+      
+      //initialized message onload && and if player wnats to play again
+      function init(){
+        location10();
+        var msg ="     You are in the foyer of your house with your younger brother "+
+                 "on a boring Sunday morning. You decide to make a fort in our "+
+                 "living room to keep you busy.  "+"\n"+
+                 "     Throughout your house there are "+
+                 "items such as a CHAIR, a SHEET, STRING and a BROOMSTICK "+
+                 "that you will need to build your fort."+
+                 "     Enter -help- to view valid commands."+
+                 "    You can win if you have visited all locations and "+
+                 "collected all 4 items and went bakc to the living room.";
+        updateDisplay(msg);         
+      }      
+      
+      //checks for being in the living room and having
+      //collected all items and visited all locations
+      function win(){
+        if(currentLocation===7&&score===100){
+          playAgain = prompt("You have won!! would you like to play again?");
+          if(playAgain==="yes"){
+            init();
+          }
+        }
+      }
+      
+      </script>
+  </head>
+  
+  <body onload="init();">
+    <h1>Fort</h1>
+    <h2>by Kelly Maud</h2>
+    <textarea rows="10" cols="60" id="tagame"></textarea>
+    <p>
+      <input type="button"
+             value= "score"
+             onclick="btn_score_click();">
+      <br><br>       
+      
+      <input type="button"
+             value= "north"
+             onclick="move(NORTH);"
+             id="north_button">        
+      <input type="button"
+             value= "east"
+             onclick="move(EAST);"
+             id="east_button">         
+      <input type="button"
+             value= "west"
+             onclick="move(WEST);"
+             id="west_button">    
+      <input type="button"
+             value= "south"
+             onclick="move(SOUTH);"
+             id="south_button">     
+             
+      <input type="button"
+             value="view inventory"
+             onclick="updateDisplay(inventory);">
+      <br>       
+      <input type="text"
+             id="text_command"> 
+      <input type="button"
+             value="Enter"
+             onclick="btn_enter_click();">        
+            
+    </p>
+    
+    <p> 
+      <IMG SRC="gamemap.png" width="500" height="600" alt="This is the map"> 
+    </p>
+    
+    <br>
+    <p>
+      <a href="mailto:Kelly.Maud1@marist.edu">Email Kelly Maud</a>
+    </p>
+   
+  </body>
+</html> 
